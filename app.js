@@ -27,10 +27,8 @@ app.post('/register', controller.register);
 app.get('/login', controller.loginPage);
 app.post('/login', controller.login);
 app.get('/logout', controller.logout);
-
 app.get('/', controller.listProjects);
 app.get('/project/:id', controller.projectDetail);
 app.post('/fund', controller.createFunding)
 app.get('/stats', controller.stats);
-
 app.listen(3000, () => console.log('Server running at http://localhost:3000'));
