@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= project.project_name %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <div class="card shadow p-4 mb-4">
+        <h1 class="card-title text-center mb-3"><%= project.project_name %></h1>
+        <p class="text-center">
+            Goal: $<%= project.funding_goal.toLocaleString() %> |
+            Raised: $<%= project.current_funding.toLocaleString() %> |
+            Deadline: <%= new Date(project.deadline).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }) %>
+        </p>
+
+        <% let percent = Math.min((parseFloat(project.current_funding) / parseFloat(project.funding_goal)) * 100, 100); %>
+        <div class="progress mb-3">
+            <div class="progress-bar" role="progressbar" style="width: <%= percent %>%;" aria-valuenow="<%= percent %>" aria-valuemin="0" aria-valuemax="100">
+                <%= Math.floor(percent) %>%
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow p-4 mb-4">
+        <h2>Rewards</h2>
+        <ul class="list-group">
+            <% rewards.forEach(r => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <%= r.reward_name %> - Min: $<%= r.min_amount %>
+                    <span class="badge bg-primary rounded-pill">Left: <%= r.quantity_remaining %></span>
+                </li>
+            <% }) %>
+        </ul>
+    </div>
+
+    <div class="card shadow p-4">
+        <h2 class="mb-3">Make a Funding</h2>
+        <% if(error){ %>
+            <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+        <form method="post" action="/fund" class="row g-3">
+            <input type="hidden" name="project_id" value="<%= project.project_id %>">
+            <div class="col-md-6">
+                <input type="number" class="form-control" name="amount" placeholder="Amount" required>
+            </div>
+            <div class="col-md-6">
+                <select name="reward_id" class="form-select">
+                    <% rewards.forEach(r => { %>
+                        <option value="<%= r.reward_id %>"><%= r.reward_name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success w-100 mb-2">Fund</button> 
+                <a href="/" class="btn btn-secondary w-100">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
